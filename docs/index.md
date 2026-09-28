@@ -21,8 +21,9 @@ terraform {
 }
 
 provider "laminar" {
-  # Configure with LMNR_PROJECT_API_KEY. Self-hosted users can additionally set
-  # LMNR_BASE_URL or configure base_url here.
+  # Configure with LMNR_PROJECT_API_KEY. Self-hosted users also set LMNR_BASE_URL
+  # (no port, as in the SDKs) and LMNR_HTTP_PORT, or base_url and http_port here.
+  # The port defaults to 443, even for http:// URLs.
 }
 ```
 
@@ -31,5 +32,6 @@ provider "laminar" {
 
 ### Optional
 
-- `base_url` (String) Laminar API base URL. Defaults to `https://api.lmnr.ai`; may also be set with `LMNR_BASE_URL`.
+- `base_url` (String) Laminar API base URL without the port, the same value the Laminar SDKs use. Defaults to `https://api.lmnr.ai`; may also be set with `LMNR_BASE_URL`. Set the port with `http_port`.
+- `http_port` (Number) Laminar API HTTP port. Defaults to `443`, like the Laminar SDKs, even for `http://` base URLs; when unset, a port in `base_url` is used, then `LMNR_HTTP_PORT`.
 - `project_api_key` (String, Sensitive) Laminar project API key. May also be set with `LMNR_PROJECT_API_KEY`.

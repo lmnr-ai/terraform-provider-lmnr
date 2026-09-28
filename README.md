@@ -20,7 +20,7 @@ terraform {
   }
 }
 
-# Reads LMNR_PROJECT_API_KEY; self-hosted users also set LMNR_BASE_URL or base_url.
+# Reads LMNR_PROJECT_API_KEY; self-hosted users also set LMNR_BASE_URL and LMNR_HTTP_PORT.
 provider "laminar" {}
 
 resource "laminar_signal" "failure_detector" {
@@ -34,6 +34,8 @@ resource "laminar_signal" "failure_detector" {
   })
 }
 ```
+
+The endpoint follows the Laminar SDKs: `base_url` (`LMNR_BASE_URL`) carries no port, and the port comes from `http_port` (`LMNR_HTTP_PORT`), defaulting to `443` even for `http://` URLs. A self-hosted app-server on port 8000 needs `LMNR_BASE_URL=http://localhost` and `LMNR_HTTP_PORT=8000`. A port written in `base_url` still works and takes precedence over `LMNR_HTTP_PORT`.
 
 A project API key scopes the provider to one project. To manage several projects, configure one provider alias per project key. LLM profiles belong to the project's workspace.
 
@@ -62,7 +64,7 @@ make sync-openapi                # copy docs/openapi/openapi.yaml from the docs 
 The live test creates and destroys real resources:
 
 ```shell
-LMNR_TF_LIVE_TEST=1 LMNR_PROJECT_API_KEY=... LMNR_BASE_URL=http://localhost:8000 \
+LMNR_TF_LIVE_TEST=1 LMNR_PROJECT_API_KEY=... LMNR_BASE_URL=http://localhost LMNR_HTTP_PORT=8000 \
   TF_ACC=1 go test ./internal/provider -run TestAccLive -count=1 -timeout 30m -v
 ```
 

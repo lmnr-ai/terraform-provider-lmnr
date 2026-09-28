@@ -40,6 +40,7 @@ Live test: `LMNR_TF_LIVE_TEST=1 LMNR_PROJECT_API_KEY=... LMNR_BASE_URL=... TF_AC
 - **Server-side validation mirrored at plan time.** Keep these in sync with `lmnr`:
   - `signalFilterColumns` ↔ `FILTER_COLUMNS` in `app-server/src/signals/service.rs`.
   - `llmProviderFields` ↔ `app-server/src/llm/profiles/service/provider_fields.rs`. The server rejects config fields a provider doesn't use.
+- **Endpoint resolution mirrors the SDKs.** `base_url` has no port; `http_port`/`LMNR_HTTP_PORT` sets it and defaults to 443 even for `http://`. `apiEndpoint` in `provider.go` owns this.
 - The Signal list endpoint is an ILIKE substring match on `name`, so the data source filters for an exact match.
 - The docs spec's `LlmProfileProvider` enum lacks `custom_responses`. The server supports it.
 
