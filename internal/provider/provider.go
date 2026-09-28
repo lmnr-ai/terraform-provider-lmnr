@@ -79,12 +79,12 @@ func (p *LaminarProvider) Configure(ctx context.Context, req provider.ConfigureR
 }
 
 func (p *LaminarProvider) Resources(context.Context) []func() resource.Resource {
-	return []func() resource.Resource{NewSignalResource, NewDatasetResource, NewLlmProfileResource}
+	return []func() resource.Resource{NewSignalResource, NewLlmProfileResource}
 }
 
 func (p *LaminarProvider) DataSources(context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewSignalDataSource, NewDatasetDataSource, NewLlmProfileDataSource, NewProjectDataSource,
+		NewSignalDataSource, NewLlmProfileDataSource, NewProjectDataSource,
 	}
 }
 

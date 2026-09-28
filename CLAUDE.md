@@ -8,6 +8,7 @@ This repository is the Laminar Terraform provider (`registry: lmnr-ai/laminar`).
 - `internal/provider/`: resources, data sources, and tests.
   - `fake_api_test.go` is an in-memory Laminar API used by the acceptance tests.
   - `live_test.go` runs against a real server.
+- The API also serves `/v1/datasets`, but datasets are intentionally not a resource (see the README's open decisions).
 - `examples/`, `docs/`: `docs/` is generated from schema descriptions and examples by `make generate`. Never edit `docs/` by hand; CI fails if it is stale.
 
 ## Commands
@@ -30,7 +31,7 @@ Live test: `LMNR_TF_LIVE_TEST=1 LMNR_PROJECT_API_KEY=... LMNR_BASE_URL=... TF_AC
 
 - **Hand-written, not generated.** `tfplugingen-openapi` can't parse the spec's `allOf`/`oneOf` and generates no CRUD logic. The contract test is the drift guard.
 - **`provider` is a reserved root attribute name**, and the schema fails to load if you use it. The LLM profile field is `llm_provider`.
-- **Signal and dataset DELETE purge ClickHouse data synchronously.** They took about 62s on staging, which is why the client timeout is 5 minutes.
+- **Signal DELETE purges ClickHouse data synchronously.** They took about 62s on staging, which is why the client timeout is 5 minutes.
 - **The API doesn't preserve `structuredOutput` key order.** `canonicalJSON` re-marshals it with sorted keys, like `jsonencode`, or import-verify diffs.
 - **LLM profile secrets:**
   - The API returns only masks, merges secrets on update, and prunes header secrets whose names aren't in `headerNames`.
@@ -39,7 +40,7 @@ Live test: `LMNR_TF_LIVE_TEST=1 LMNR_PROJECT_API_KEY=... LMNR_BASE_URL=... TF_AC
 - **Server-side validation mirrored at plan time.** Keep these in sync with `lmnr`:
   - `signalFilterColumns` ↔ `FILTER_COLUMNS` in `app-server/src/signals/service.rs`.
   - `llmProviderFields` ↔ `app-server/src/llm/profiles/service/provider_fields.rs`. The server rejects config fields a provider doesn't use.
-- Signal list is an ILIKE substring match on `name`; the dataset list is an exact match. Names aren't unique for datasets, so the data source errors on ambiguity.
+- The Signal list endpoint is an ILIKE substring match on `name`, so the data source filters for an exact match.
 - The docs spec's `LlmProfileProvider` enum lacks `custom_responses`. The server supports it.
 
 ## Style

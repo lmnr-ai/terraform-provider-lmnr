@@ -23,7 +23,6 @@ type fakeAPI struct {
 	mu       sync.Mutex
 	nextID   int
 	signals  map[string]map[string]any
-	datasets map[string]map[string]any
 	profiles map[string]map[string]any
 	secrets  map[string]map[string]any
 	requests []fakeRequest
@@ -39,7 +38,6 @@ func newFakeAPI(t *testing.T) (*fakeAPI, string) {
 	api := &fakeAPI{
 		t:        t,
 		signals:  map[string]map[string]any{},
-		datasets: map[string]map[string]any{},
 		profiles: map[string]map[string]any{},
 		secrets:  map[string]map[string]any{},
 	}
@@ -101,17 +99,6 @@ func (f *fakeAPI) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			return map[string]any{"signals": nonNil(matched)}
-		})
-	case "datasets":
-		f.serveCollection(w, r, id, body, f.datasets, f.createDataset, f.updateDataset, func(items []any) any {
-			name := r.URL.Query().Get("name")
-			var matched []any
-			for _, item := range items {
-				if name == "" || item.(map[string]any)["name"] == name {
-					matched = append(matched, item)
-				}
-			}
-			return nonNil(matched)
 		})
 	case "llm-profiles":
 		f.serveCollection(w, r, id, body, f.profiles, f.createProfile, f.updateProfile, func(items []any) any {
@@ -188,12 +175,6 @@ func (f *fakeAPI) resolveProfileName(signal map[string]any) {
 		signal["llmProfileName"] = f.profiles[id]["name"]
 	}
 }
-
-func (f *fakeAPI) createDataset(id string, body map[string]any) map[string]any {
-	return map[string]any{"id": id, "name": body["name"], "projectId": fakeProjectID, "createdAt": "2026-09-07T10:00:00Z"}
-}
-
-func (f *fakeAPI) updateDataset(dataset, body map[string]any) { dataset["name"] = body["name"] }
 
 func (f *fakeAPI) createProfile(id string, body map[string]any) map[string]any {
 	profile := map[string]any{"id": id, "workspaceId": fakeWorkspaceID, "createdAt": "2026-09-07T10:00:00Z"}
