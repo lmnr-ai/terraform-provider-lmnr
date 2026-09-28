@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lmnr-ai/terraform-provider-laminar/internal/client"
+	"github.com/lmnr-ai/terraform-provider-lmnr/internal/client"
 )
 
 var _ provider.Provider = &LaminarProvider{}
@@ -29,7 +29,7 @@ type LaminarProviderModel struct {
 }
 
 func (p *LaminarProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "laminar"
+	resp.TypeName = "lmnr"
 	resp.Version = p.version
 }
 
@@ -98,7 +98,7 @@ func (p *LaminarProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	api, err := client.New(endpoint, apiKey, "terraform-provider-laminar/"+p.version, nil)
+	api, err := client.New(endpoint, apiKey, "terraform-provider-lmnr/"+p.version, nil)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to configure Laminar client", err.Error())
 		return

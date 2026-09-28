@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lmnr-ai/terraform-provider-laminar/internal/client"
+	"github.com/lmnr-ai/terraform-provider-lmnr/internal/client"
 )
 
 var _ datasource.DataSource = &ProjectDataSource{}

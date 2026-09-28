@@ -15,9 +15,9 @@ import (
 func TestAccLive(t *testing.T) {
 	testAccLivePreCheck(t)
 	suffix := fmt.Sprintf("tf-acc-%d", time.Now().UnixNano())
-	providerBlock := `provider "laminar" {}`
+	providerBlock := `provider "lmnr" {}`
 	if baseURL := os.Getenv("LMNR_BASE_URL"); baseURL != "" {
-		providerBlock = fmt.Sprintf(`provider "laminar" { base_url = %q }`, baseURL)
+		providerBlock = fmt.Sprintf(`provider "lmnr" { base_url = %q }`, baseURL)
 	}
 	selfHosted := os.Getenv("LMNR_TF_LIVE_SELF_HOSTED") != ""
 
@@ -26,7 +26,7 @@ func TestAccLive(t *testing.T) {
 		profile := ""
 		if selfHosted {
 			profile = fmt.Sprintf(`
-resource "laminar_llm_profile" "live" {
+resource "lmnr_llm_profile" "live" {
   name         = "%s"
   llm_provider = "openai_responses"
   models       = ["gpt-5-mini", "gpt-5"]
@@ -34,11 +34,11 @@ resource "laminar_llm_profile" "live" {
 }
 `, suffix)
 			route = `
-  llm_profile_id = laminar_llm_profile.live.id
+  llm_profile_id = lmnr_llm_profile.live.id
   model          = "gpt-5-mini"`
 		}
 		return providerBlock + profile + fmt.Sprintf(`
-resource "laminar_signal" "live" {
+resource "lmnr_signal" "live" {
   name   = "%[1]s"
   prompt = %[2]q
   trigger = {
@@ -56,36 +56,36 @@ resource "laminar_signal" "live" {
   })%[3]s
 }
 
-data "laminar_project" "current" {}
+data "lmnr_project" "current" {}
 
-data "laminar_signal" "by_name" {
-  name = laminar_signal.live.name
+data "lmnr_signal" "by_name" {
+  name = lmnr_signal.live.name
 }
 `, suffix, prompt, route)
 	}
 
 	checks := []resource.TestCheckFunc{
-		resource.TestCheckResourceAttrSet("laminar_signal.live", "id"),
-		resource.TestCheckResourceAttr("laminar_signal.live", "mode", "realtime"),
-		resource.TestCheckResourceAttr("laminar_signal.live", "filters.#", "2"),
-		resource.TestCheckResourceAttrPair("laminar_signal.live", "project_id", "data.laminar_project.current", "id"),
-		resource.TestCheckResourceAttrPair("data.laminar_signal.by_name", "id", "laminar_signal.live", "id"),
+		resource.TestCheckResourceAttrSet("lmnr_signal.live", "id"),
+		resource.TestCheckResourceAttr("lmnr_signal.live", "mode", "realtime"),
+		resource.TestCheckResourceAttr("lmnr_signal.live", "filters.#", "2"),
+		resource.TestCheckResourceAttrPair("lmnr_signal.live", "project_id", "data.lmnr_project.current", "id"),
+		resource.TestCheckResourceAttrPair("data.lmnr_signal.by_name", "id", "lmnr_signal.live", "id"),
 	}
 	if selfHosted {
 		checks = append(checks,
-			resource.TestCheckResourceAttrPair("laminar_signal.live", "llm_profile_id", "laminar_llm_profile.live", "id"),
-			resource.TestCheckResourceAttr("laminar_signal.live", "llm_profile_name", suffix),
+			resource.TestCheckResourceAttrPair("lmnr_signal.live", "llm_profile_id", "lmnr_llm_profile.live", "id"),
+			resource.TestCheckResourceAttr("lmnr_signal.live", "llm_profile_name", suffix),
 		)
 	}
 
 	steps := []resource.TestStep{
 		{Config: config("Detect failures in this trace."), Check: resource.ComposeAggregateTestCheckFunc(checks...)},
-		{Config: config("Detect failed tool calls in this trace."), Check: resource.TestCheckResourceAttr("laminar_signal.live", "version", "2")},
-		{ResourceName: "laminar_signal.live", ImportState: true, ImportStateVerify: true},
+		{Config: config("Detect failed tool calls in this trace."), Check: resource.TestCheckResourceAttr("lmnr_signal.live", "version", "2")},
+		{ResourceName: "lmnr_signal.live", ImportState: true, ImportStateVerify: true},
 	}
 	if selfHosted {
 		steps = append(steps, resource.TestStep{
-			ResourceName: "laminar_llm_profile.live", ImportState: true, ImportStateVerify: true,
+			ResourceName: "lmnr_llm_profile.live", ImportState: true, ImportStateVerify: true,
 			ImportStateVerifyIgnore: []string{"api_key"},
 		})
 	}

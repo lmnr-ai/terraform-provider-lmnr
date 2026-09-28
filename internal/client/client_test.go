@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/lmnr-ai/terraform-provider-laminar/internal/client"
+	"github.com/lmnr-ai/terraform-provider-lmnr/internal/client"
 )
 
 const signalID = "018f78a6-cedf-7a62-9f4a-3dcb2ae61010"
@@ -27,7 +27,7 @@ func fakeAPI(t *testing.T, responses ...string) (*client.Client, *[]recorded) {
 		if got := r.Header.Get("Authorization"); got != "Bearer test-key" {
 			t.Errorf("authorization = %q", got)
 		}
-		if got := r.Header.Get("User-Agent"); got != "terraform-provider-laminar/test" {
+		if got := r.Header.Get("User-Agent"); got != "terraform-provider-lmnr/test" {
 			t.Errorf("user agent = %q", got)
 		}
 		req := recorded{method: r.Method, path: r.URL.Path, query: r.URL.RawQuery}
@@ -46,7 +46,7 @@ func fakeAPI(t *testing.T, responses ...string) (*client.Client, *[]recorded) {
 		_, _ = w.Write([]byte(responses[len(requests)-1]))
 	}))
 	t.Cleanup(server.Close)
-	api, err := client.New(server.URL, "test-key", "terraform-provider-laminar/test", server.Client())
+	api, err := client.New(server.URL, "test-key", "terraform-provider-lmnr/test", server.Client())
 	if err != nil {
 		t.Fatal(err)
 	}

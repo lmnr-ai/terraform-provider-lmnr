@@ -22,14 +22,14 @@ variable "gateway_team_token" {
   sensitive = true
 }
 
-resource "laminar_llm_profile" "openai" {
+resource "lmnr_llm_profile" "openai" {
   name         = "openai"
   llm_provider = "openai_responses"
   models       = ["gpt-5-mini", "gpt-5"]
   api_key      = var.openai_api_key
 }
 
-resource "laminar_llm_profile" "bedrock" {
+resource "lmnr_llm_profile" "bedrock" {
   name              = "bedrock"
   llm_provider      = "bedrock"
   models            = ["anthropic.claude-sonnet-4-5-20250929-v1:0"]
@@ -39,7 +39,7 @@ resource "laminar_llm_profile" "bedrock" {
   secret_access_key = var.aws_secret_access_key
 }
 
-resource "laminar_llm_profile" "gateway" {
+resource "lmnr_llm_profile" "gateway" {
   name         = "internal-gateway"
   llm_provider = "custom"
   models       = ["llama-3.3-70b"]

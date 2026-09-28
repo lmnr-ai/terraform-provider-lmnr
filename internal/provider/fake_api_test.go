@@ -245,7 +245,7 @@ func writeJSON(w http.ResponseWriter, status int, value any) {
 
 func providerConfig(baseURL string) string {
 	return fmt.Sprintf(`
-provider "laminar" {
+provider "lmnr" {
   project_api_key = "test-key"
   base_url        = %q
 }
