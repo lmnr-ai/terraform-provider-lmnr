@@ -20,7 +20,7 @@ const signalSchema = `
 
 func TestAccSignalResourceLifecycle(t *testing.T) {
 	api, baseURL := newFakeAPI(t)
-	const address = "laminar_signal.test"
+	const address = "lmnr_signal.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -29,7 +29,7 @@ func TestAccSignalResourceLifecycle(t *testing.T) {
 			{
 				// Server defaults for trigger, filters, and mode.
 				Config: providerConfig(baseURL) + `
-resource "laminar_signal" "test" {
+resource "lmnr_signal" "test" {
   name        = "Failure detector"
   prompt      = "Identify failures"
   sample_rate = 50
@@ -56,7 +56,7 @@ resource "laminar_signal" "test" {
 			},
 			{
 				Config: providerConfig(baseURL) + `
-resource "laminar_signal" "test" {
+resource "lmnr_signal" "test" {
   name     = "Failure detector v2"
   prompt   = "Identify failures"
   mode     = "batch"
@@ -106,7 +106,7 @@ resource "laminar_signal" "test" {
 			{
 				// Removing trigger and filters restores the defaults; an empty list clears filters.
 				Config: providerConfig(baseURL) + `
-resource "laminar_signal" "test" {
+resource "lmnr_signal" "test" {
   name    = "Failure detector v2"
   prompt  = "Identify failures"
   filters = []
@@ -130,22 +130,22 @@ func TestAccSignalResourceSelfHostedRoute(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig(baseURL) + `
-resource "laminar_llm_profile" "openai" {
+resource "lmnr_llm_profile" "openai" {
   name     = "openai"
   llm_provider = "openai_responses"
   models   = ["gpt-5-mini"]
   api_key  = "sk-test"
 }
-resource "laminar_signal" "test" {
+resource "lmnr_signal" "test" {
   name           = "Routed"
   prompt         = "Identify failures"
-  llm_profile_id = laminar_llm_profile.openai.id
+  llm_profile_id = lmnr_llm_profile.openai.id
   model          = "gpt-5-mini"
 ` + signalSchema + `}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrPair("laminar_signal.test", "llm_profile_id", "laminar_llm_profile.openai", "id"),
-					resource.TestCheckResourceAttr("laminar_signal.test", "llm_profile_name", "openai"),
-					resource.TestCheckResourceAttr("laminar_signal.test", "model", "gpt-5-mini"),
+					resource.TestCheckResourceAttrPair("lmnr_signal.test", "llm_profile_id", "lmnr_llm_profile.openai", "id"),
+					resource.TestCheckResourceAttr("lmnr_signal.test", "llm_profile_name", "openai"),
+					resource.TestCheckResourceAttr("lmnr_signal.test", "model", "gpt-5-mini"),
 				),
 			},
 		},
@@ -201,7 +201,7 @@ func TestAccSignalResourceValidation(t *testing.T) {
 				Steps: []resource.TestStep{{
 					PlanOnly: true,
 					Config: providerConfig("http://127.0.0.1:1") + fmt.Sprintf(`
-resource "laminar_signal" "test" {
+resource "lmnr_signal" "test" {
   name   = %q
   prompt = "Identify failures"
   %s

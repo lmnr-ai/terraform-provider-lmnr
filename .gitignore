@@ -27,7 +27,7 @@ website/node_modules
 *.iml
 
 # Go build and test output
-terraform-provider-laminar
+terraform-provider-lmnr
 coverage.out
 *.coverprofile
 

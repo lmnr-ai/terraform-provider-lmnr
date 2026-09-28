@@ -1,4 +1,4 @@
-module github.com/lmnr-ai/terraform-provider-laminar
+module github.com/lmnr-ai/terraform-provider-lmnr
 
 go 1.25.8
 

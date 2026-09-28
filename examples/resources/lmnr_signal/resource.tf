@@ -1,4 +1,4 @@
-resource "laminar_signal" "failure_detector" {
+resource "lmnr_signal" "failure_detector" {
   name   = "Failure detector"
   prompt = "Identify failed or abandoned runs and explain why."
 
@@ -29,10 +29,10 @@ resource "laminar_signal" "failure_detector" {
 }
 
 # Self-hosted deployments route Signals through a workspace LLM profile.
-resource "laminar_signal" "self_hosted" {
+resource "lmnr_signal" "self_hosted" {
   name           = "Tool misuse"
   prompt         = "Did the agent call a tool with invalid arguments?"
-  llm_profile_id = laminar_llm_profile.openai.id
+  llm_profile_id = lmnr_llm_profile.openai.id
   model          = "gpt-5-mini"
 
   structured_output = jsonencode({

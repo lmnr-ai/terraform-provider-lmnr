@@ -4,26 +4,26 @@ Manage [Laminar](https://laminar.sh) Signals and LLM profiles with Terraform.
 
 | Type | Name | Notes |
 |---|---|---|
-| Resource | `laminar_signal` | Prompt, structured output, trigger, filters, sampling, mode, LLM profile routing (self-hosted) |
-| Resource | `laminar_llm_profile` | Workspace-scoped provider credentials and models |
-| Data source | `laminar_signal`, `laminar_llm_profile` | Look up by `id` or exact `name` |
-| Data source | `laminar_project` | The project that owns the API key |
+| Resource | `lmnr_signal` | Prompt, structured output, trigger, filters, sampling, mode, LLM profile routing (self-hosted) |
+| Resource | `lmnr_llm_profile` | Workspace-scoped provider credentials and models |
+| Data source | `lmnr_signal`, `lmnr_llm_profile` | Look up by `id` or exact `name` |
+| Data source | `lmnr_project` | The project that owns the API key |
 
 ## Example
 
 ```hcl
 terraform {
   required_providers {
-    laminar = {
-      source = "lmnr-ai/laminar"
+    lmnr = {
+      source = "lmnr-ai/lmnr"
     }
   }
 }
 
 # Reads LMNR_PROJECT_API_KEY from the environment.
-provider "laminar" {}
+provider "lmnr" {}
 
-resource "laminar_signal" "failure_detector" {
+resource "lmnr_signal" "failure_detector" {
   name   = "Failure detector"
   prompt = "Identify failed or abandoned runs."
 
@@ -37,7 +37,7 @@ resource "laminar_signal" "failure_detector" {
 
 Run `terraform init` to install the provider from the Terraform Registry, then `terraform apply`.
 
-Full reference: [Terraform Registry](https://registry.terraform.io/providers/lmnr-ai/laminar/latest/docs) (source in [`docs/`](docs/)). More examples: [`examples/`](examples/).
+Full reference: [Terraform Registry](https://registry.terraform.io/providers/lmnr-ai/lmnr/latest/docs) (source in [`docs/`](docs/)). More examples: [`examples/`](examples/).
 
 ## Configuration
 
@@ -52,7 +52,7 @@ Arguments in the provider block take precedence over environment variables. Crea
 A self-hosted deployment usually needs only the URL and port:
 
 ```hcl
-provider "laminar" {
+provider "lmnr" {
   base_url  = "http://laminar.internal"
   http_port = 8000
 }
@@ -61,13 +61,13 @@ provider "laminar" {
 A project API key scopes the provider to one project. To manage several projects, configure one provider alias per project key:
 
 ```hcl
-provider "laminar" {
+provider "lmnr" {
   alias           = "staging"
   project_api_key = var.staging_project_api_key
 }
 
-resource "laminar_signal" "staging_failures" {
-  provider = laminar.staging
+resource "lmnr_signal" "staging_failures" {
+  provider = lmnr.staging
   # ...
 }
 ```
@@ -79,15 +79,15 @@ LLM profiles belong to the project's workspace, so every project in that workspa
 Every resource can be imported by UUID, which you can copy from the Laminar UI:
 
 ```shell
-terraform import laminar_signal.failure_detector <signal-uuid>
-terraform import laminar_llm_profile.openai <llm-profile-uuid>
+terraform import lmnr_signal.failure_detector <signal-uuid>
+terraform import lmnr_llm_profile.openai <llm-profile-uuid>
 ```
 
 After importing an LLM profile, set its credentials in configuration. The API never returns them, and the next apply writes them.
 
 ## Behavior worth knowing
 
-- Destroying a `laminar_signal` deletes its events, which can take a minute on large projects. Use `lifecycle { prevent_destroy = true }` for Signals you care about, or set `disabled = true` to pause one.
+- Destroying a `lmnr_signal` deletes its events, which can take a minute on large projects. Use `lifecycle { prevent_destroy = true }` for Signals you care about, or set `disabled = true` to pause one.
 - Omitting `trigger` or `filters` on a Signal applies the server defaults (`rootSpanFinished`, `total_token_count > 1000`). Set `filters = []` to evaluate every trace.
 - LLM profile credentials are write-only in the API. Terraform stores the configured values in state as sensitive, so keep state encrypted.
 - The LLM profile provider attribute is `llm_provider`, because `provider` is a reserved Terraform meta-argument.

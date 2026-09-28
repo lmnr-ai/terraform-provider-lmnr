@@ -9,7 +9,7 @@ import (
 
 	"go.yaml.in/yaml/v3"
 
-	"github.com/lmnr-ai/terraform-provider-laminar/internal/client"
+	"github.com/lmnr-ai/terraform-provider-lmnr/internal/client"
 )
 
 // The provider is hand-written because tfplugingen-openapi cannot map the

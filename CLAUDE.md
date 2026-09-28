@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This repository is the Laminar Terraform provider (`registry: lmnr-ai/laminar`). It's built on Terraform Plugin Framework and wraps the Laminar project API that `app-server` serves in [lmnr-ai/lmnr](https://github.com/lmnr-ai/lmnr).
+This repository is the Laminar Terraform provider (`registry: lmnr-ai/lmnr`). It's built on Terraform Plugin Framework and wraps the Laminar project API that `app-server` serves in [lmnr-ai/lmnr](https://github.com/lmnr-ai/lmnr).
 
 ## Layout
 

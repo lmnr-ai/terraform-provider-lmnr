@@ -13,8 +13,8 @@ func TestAccProjectDataSource(t *testing.T) {
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{{
-			Config: providerConfig(baseURL) + `data "laminar_project" "current" {}`,
-			Check:  resource.TestCheckResourceAttr("data.laminar_project.current", "id", fakeProjectID),
+			Config: providerConfig(baseURL) + `data "lmnr_project" "current" {}`,
+			Check:  resource.TestCheckResourceAttr("data.lmnr_project.current", "id", fakeProjectID),
 		}},
 	})
 }

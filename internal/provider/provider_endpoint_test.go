@@ -47,12 +47,12 @@ func TestAccProviderHTTPPortOverride(t *testing.T) {
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{{
-			Config: fmt.Sprintf(`provider "laminar" {
+			Config: fmt.Sprintf(`provider "lmnr" {
   project_api_key = "test-key"
   base_url        = %q
 }
-data "laminar_project" "current" {}`, withoutPort),
-			Check: resource.TestCheckResourceAttr("data.laminar_project.current", "id", fakeProjectID),
+data "lmnr_project" "current" {}`, withoutPort),
+			Check: resource.TestCheckResourceAttr("data.lmnr_project.current", "id", fakeProjectID),
 		}},
 	})
 }
@@ -62,7 +62,7 @@ func TestProviderInvalidHTTPPortEnv(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{{
-			Config:      providerConfig("http://127.0.0.1") + `data "laminar_project" "current" {}`,
+			Config:      providerConfig("http://127.0.0.1") + `data "lmnr_project" "current" {}`,
 			ExpectError: regexp.MustCompile("Invalid LMNR_HTTP_PORT"),
 		}},
 	})

@@ -2,8 +2,8 @@
 
 FEATURES:
 
-* **New Resource:** `laminar_signal`
-* **New Resource:** `laminar_llm_profile`
-* **New Data Source:** `laminar_signal`
-* **New Data Source:** `laminar_llm_profile`
-* **New Data Source:** `laminar_project`
+* **New Resource:** `lmnr_signal`
+* **New Resource:** `lmnr_llm_profile`
+* **New Data Source:** `lmnr_signal`
+* **New Data Source:** `lmnr_llm_profile`
+* **New Data Source:** `lmnr_project`

@@ -13,7 +13,7 @@ import (
 
 func TestAccLlmProfileResourceLifecycle(t *testing.T) {
 	api, baseURL := newFakeAPI(t)
-	const address = "laminar_llm_profile.gateway"
+	const address = "lmnr_llm_profile.gateway"
 	profileID := func(s *terraform.State) string { return s.RootModule().Resources[address].Primary.ID }
 
 	resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestAccLlmProfileResourceLifecycle(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: providerConfig(baseURL) + `
-resource "laminar_llm_profile" "gateway" {
+resource "lmnr_llm_profile" "gateway" {
   name     = "gateway"
   llm_provider = "custom"
   models   = ["m1", "m2"]
@@ -55,7 +55,7 @@ resource "laminar_llm_profile" "gateway" {
 			{
 				// Rotate the key, drop a header, and change the model list.
 				Config: providerConfig(baseURL) + `
-resource "laminar_llm_profile" "gateway" {
+resource "lmnr_llm_profile" "gateway" {
   name     = "gateway"
   llm_provider = "custom"
   models   = ["m2", "m3"]
@@ -89,7 +89,7 @@ resource "laminar_llm_profile" "gateway" {
 			{
 				// Switching provider in place sends the new provider's config and credentials.
 				Config: providerConfig(baseURL) + `
-resource "laminar_llm_profile" "gateway" {
+resource "lmnr_llm_profile" "gateway" {
   name              = "gateway"
   llm_provider          = "bedrock"
   models            = ["anthropic.claude"]
@@ -98,18 +98,18 @@ resource "laminar_llm_profile" "gateway" {
   aws_access_key_id = "AKIA123"
   secret_access_key = "secret"
 }
-data "laminar_llm_profile" "by_name" {
+data "lmnr_llm_profile" "by_name" {
   name       = "gateway"
-  depends_on = [laminar_llm_profile.gateway]
+  depends_on = [lmnr_llm_profile.gateway]
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(address, "llm_provider", "bedrock"),
 					resource.TestCheckNoResourceAttr(address, "api_key"),
 					resource.TestCheckNoResourceAttr(address, "base_url"),
-					resource.TestCheckResourceAttr("data.laminar_llm_profile.by_name", "region", "us-east-1"),
-					resource.TestCheckResourceAttr("data.laminar_llm_profile.by_name", "auth_type", "aws_keys"),
-					resource.TestCheckResourceAttr("data.laminar_llm_profile.by_name", "header_names.#", "0"),
+					resource.TestCheckResourceAttr("data.lmnr_llm_profile.by_name", "region", "us-east-1"),
+					resource.TestCheckResourceAttr("data.lmnr_llm_profile.by_name", "auth_type", "aws_keys"),
+					resource.TestCheckResourceAttr("data.lmnr_llm_profile.by_name", "header_names.#", "0"),
 					func(s *terraform.State) error {
 						body := api.lastRequest("PATCH", "/v1/llm-profiles/")
 						want := map[string]any{"auth": map[string]any{"type": "aws_keys", "accessKeyId": "AKIA123"}, "region": "us-east-1"}
@@ -184,7 +184,7 @@ func TestAccLlmProfileResourceValidation(t *testing.T) {
 				Steps: []resource.TestStep{{
 					PlanOnly: true,
 					Config: providerConfig("http://127.0.0.1:1") + `
-resource "laminar_llm_profile" "test" {
+resource "lmnr_llm_profile" "test" {
   name   = "test"
   models = ["m"]
   ` + tc.body + `
