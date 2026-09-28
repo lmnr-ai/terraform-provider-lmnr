@@ -38,10 +38,6 @@ resource "laminar_llm_profile" "live" {
   model          = "gpt-5-mini"`
 		}
 		return providerBlock + profile + fmt.Sprintf(`
-resource "laminar_dataset" "live" {
-  name = "%[1]s"
-}
-
 resource "laminar_signal" "live" {
   name   = "%[1]s"
   prompt = %[2]q
@@ -65,10 +61,6 @@ data "laminar_project" "current" {}
 data "laminar_signal" "by_name" {
   name = laminar_signal.live.name
 }
-
-data "laminar_dataset" "by_name" {
-  name = laminar_dataset.live.name
-}
 `, suffix, prompt, route)
 	}
 
@@ -78,7 +70,6 @@ data "laminar_dataset" "by_name" {
 		resource.TestCheckResourceAttr("laminar_signal.live", "filters.#", "2"),
 		resource.TestCheckResourceAttrPair("laminar_signal.live", "project_id", "data.laminar_project.current", "id"),
 		resource.TestCheckResourceAttrPair("data.laminar_signal.by_name", "id", "laminar_signal.live", "id"),
-		resource.TestCheckResourceAttrPair("data.laminar_dataset.by_name", "id", "laminar_dataset.live", "id"),
 	}
 	if selfHosted {
 		checks = append(checks,
@@ -91,7 +82,6 @@ data "laminar_dataset" "by_name" {
 		{Config: config("Detect failures in this trace."), Check: resource.ComposeAggregateTestCheckFunc(checks...)},
 		{Config: config("Detect failed tool calls in this trace."), Check: resource.TestCheckResourceAttr("laminar_signal.live", "version", "2")},
 		{ResourceName: "laminar_signal.live", ImportState: true, ImportStateVerify: true},
-		{ResourceName: "laminar_dataset.live", ImportState: true, ImportStateVerify: true},
 	}
 	if selfHosted {
 		steps = append(steps, resource.TestStep{

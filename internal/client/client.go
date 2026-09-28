@@ -43,8 +43,8 @@ func New(baseURL, apiKey, userAgent string, httpClient *http.Client) (*Client, e
 		return nil, errors.New("laminar project API key is required")
 	}
 	if httpClient == nil {
-		// Signal and dataset deletes purge events and datapoints synchronously; a
-		// minute is common on large projects.
+		// Signal deletes purge their events synchronously; a minute is common on
+		// large projects.
 		httpClient = &http.Client{Timeout: 5 * time.Minute}
 	}
 	return &Client{baseURL: parsed, apiKey: apiKey, userAgent: userAgent, httpClient: httpClient}, nil

@@ -1,13 +1,12 @@
 # Terraform Provider for Laminar
 
-Manage [Laminar](https://laminar.sh) Signals, datasets, and LLM profiles with Terraform.
+Manage [Laminar](https://laminar.sh) Signals and LLM profiles with Terraform.
 
 | Type | Name | Notes |
 |---|---|---|
 | Resource | `laminar_signal` | Prompt, structured output, trigger, filters, sampling, mode, LLM profile routing (self-hosted) |
-| Resource | `laminar_dataset` | Name only; datapoints stay in Laminar |
 | Resource | `laminar_llm_profile` | Workspace-scoped provider credentials and models |
-| Data source | `laminar_signal`, `laminar_dataset`, `laminar_llm_profile` | Look up by `id` or exact `name` |
+| Data source | `laminar_signal`, `laminar_llm_profile` | Look up by `id` or exact `name` |
 | Data source | `laminar_project` | The project that owns the API key |
 
 ## Example
@@ -34,10 +33,6 @@ resource "laminar_signal" "failure_detector" {
     required   = ["failed"]
   })
 }
-
-resource "laminar_dataset" "golden" {
-  name = "golden-set"
-}
 ```
 
 A project API key scopes the provider to one project. To manage several projects, configure one provider alias per project key. LLM profiles belong to the project's workspace.
@@ -46,7 +41,7 @@ Full reference: [`docs/`](docs/). Examples: [`examples/`](examples/).
 
 ## Behavior worth knowing
 
-- Destroying a `laminar_signal` deletes its events; destroying a `laminar_dataset` deletes its datapoints. Both can take a minute on large projects. Use `lifecycle { prevent_destroy = true }` for resources you care about.
+- Destroying a `laminar_signal` deletes its events, which can take a minute on large projects. Use `lifecycle { prevent_destroy = true }` for Signals you care about, or set `disabled = true` to pause one.
 - Omitting `trigger` or `filters` on a Signal applies the server defaults (`rootSpanFinished`, `total_token_count > 1000`). Set `filters = []` to evaluate every trace.
 - LLM profile credentials are write-only in the API. Terraform stores the configured values in state as sensitive, so keep state encrypted. After `terraform import`, set the credentials in configuration; the next apply writes them.
 - The LLM profile provider attribute is `llm_provider`, because `provider` is a reserved Terraform meta-argument.
@@ -93,4 +88,5 @@ The docs spec's `LlmProfileProvider` enum is missing `custom_responses`, which t
 ### Open decisions
 
 - LLM profile secrets are sensitive values in state. With Terraform ≥ 1.11 as the minimum version, they could become write-only attributes, with a version attribute that triggers rotation.
-- Signal alerts and dataset datapoints are not managed.
+- Not managed yet: Signal alerts, LLM feature routes, custom model costs. Each needs a project API endpoint in app-server first.
+- Datasets are left out on purpose. A name-only resource adds little, and destroying one deletes its datapoints; revisit when another resource references datasets.

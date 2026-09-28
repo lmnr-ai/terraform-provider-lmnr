@@ -112,35 +112,6 @@ func TestSignalCRUD(t *testing.T) {
 	}
 }
 
-func TestDatasetCRUD(t *testing.T) {
-	t.Parallel()
-	dataset := `{"id":"d1","name":"golden","projectId":"p1","createdAt":"2026-09-07T10:00:00Z"}`
-	api, requests := fakeAPI(t, dataset, "["+dataset+"]", dataset, dataset, "")
-	ctx := context.Background()
-
-	if got, err := api.CreateDataset(ctx, "golden"); err != nil || got.ID != "d1" {
-		t.Fatalf("create = %#v, %v", got, err)
-	}
-	if got, err := api.ListDatasets(ctx, "golden"); err != nil || len(got) != 1 {
-		t.Fatalf("list = %#v, %v", got, err)
-	}
-	if _, err := api.GetDataset(ctx, "d1"); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := api.UpdateDataset(ctx, "d1", "silver"); err != nil {
-		t.Fatal(err)
-	}
-	if err := api.DeleteDataset(ctx, "d1"); err != nil {
-		t.Fatal(err)
-	}
-	if got := (*requests)[3]; got.method != http.MethodPatch || got.path != "/v1/datasets/d1" || got.body["name"] != "silver" {
-		t.Errorf("update request = %#v", got)
-	}
-	if got := (*requests)[1].query; got != "name=golden" {
-		t.Errorf("list query = %q", got)
-	}
-}
-
 func TestLlmProfileCRUD(t *testing.T) {
 	t.Parallel()
 	profile := `{"id":"l1","workspaceId":"w1","name":"gateway","provider":"custom","config":{"auth":{"type":"api_key"},"baseUrl":"https://gw.example.com","headerNames":["X-Team"]},"models":["m1"],"secrets":{"apiKey":"sk-***123","secretAccessKey":null,"token":null,"headers":["X-Team"]},"createdAt":"t","updatedAt":"t"}`

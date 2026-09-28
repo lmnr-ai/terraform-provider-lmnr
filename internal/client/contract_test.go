@@ -116,8 +116,6 @@ func TestClientTypesMatchOpenAPISpec(t *testing.T) {
 		{"SignalList", struct {
 			Signals []client.Signal `json:"signals"`
 		}{}},
-		{"Dataset", client.Dataset{}},
-		{"DatasetNameRequest", client.DatasetNameRequest{}},
 		{"LlmProfile", client.LlmProfile{}},
 		{"LlmProfileConfig", client.LlmProfileConfig{}},
 		{"LlmProfileAuth", client.LlmProfileAuth{}},
@@ -147,8 +145,6 @@ func TestClientPathsExistInOpenAPISpec(t *testing.T) {
 		"/v1/project":                   {"get"},
 		"/v1/signals":                   {"get", "post"},
 		"/v1/signals/{signal_id}":       {"get", "patch", "delete"},
-		"/v1/datasets":                  {"get", "post"},
-		"/v1/datasets/{dataset_id}":     {"get", "patch", "delete"},
 		"/v1/llm-profiles":              {"get", "post"},
 		"/v1/llm-profiles/{profile_id}": {"get", "patch", "delete"},
 	}
