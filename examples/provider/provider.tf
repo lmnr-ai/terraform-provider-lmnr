@@ -6,7 +6,6 @@ terraform {
   }
 }
 
-provider "laminar" {
-  # Configure with LMNR_PROJECT_API_KEY. Self-hosted users can additionally set
-  # LMNR_BASE_URL or configure base_url here.
-}
+# Reads LMNR_PROJECT_API_KEY, LMNR_BASE_URL and LMNR_HTTP_PORT from the
+# environment. Self-hosted deployments can set base_url and http_port here.
+provider "laminar" {}
