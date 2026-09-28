@@ -4,7 +4,7 @@ Issues and pull requests are welcome. For changes to the Laminar API itself, see
 
 ## Development
 
-Requirements: Go 1.25+ and Terraform 1.0+.
+Requirements: Go 1.25+ and Terraform 1.0+ or OpenTofu. CI runs the acceptance tests on Terraform 1.13–1.16 and on the latest OpenTofu. To run them with OpenTofu locally, also set `TF_ACC_TERRAFORM_PATH=$(command -v tofu) TF_ACC_PROVIDER_HOST=registry.opentofu.org TF_ACC_PROVIDER_NAMESPACE=lmnr-ai`.
 
 ```shell
 make build                       # go build ./...

@@ -1,6 +1,6 @@
 # Terraform Provider for Laminar
 
-Manage [Laminar](https://laminar.sh) Signals and LLM profiles with Terraform.
+Manage [Laminar](https://laminar.sh) Signals and LLM profiles with Terraform or OpenTofu.
 
 | Type | Name | Notes |
 |---|---|---|

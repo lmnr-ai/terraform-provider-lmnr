@@ -26,6 +26,9 @@ make sync-openapi                             # refresh vendored spec from ../do
 Live test: `LMNR_TF_LIVE_TEST=1 LMNR_PROJECT_API_KEY=... LMNR_BASE_URL=... TF_ACC=1 go test ./internal/provider -run TestAccLive -count=1 -timeout 30m -v`.
 - Add `LMNR_TF_LIVE_SELF_HOSTED=1` only against a server without `LAMINAR_CLOUD`. Self-hosted requires `llmProfileId` and `model` on Signals; Cloud rejects them.
 - Afterwards, check that no `tf-acc-*` resources are left.
+- A local app-server on the shared staging Postgres can return HTTP 500 (`EMAXCONNSESSION` in its log) when the pooler's 15 session slots are used up. Terraform's default parallelism of 10 hits this; the provider isn't at fault. Retry with `TF_CLI_ARGS_plan`, `TF_CLI_ARGS_apply` and `TF_CLI_ARGS_destroy` set to `-parallelism=1`.
+
+OpenTofu: set `TF_ACC_TERRAFORM_PATH=$(command -v tofu) TF_ACC_PROVIDER_HOST=registry.opentofu.org TF_ACC_PROVIDER_NAMESPACE=lmnr-ai`. Without these, `tofu init` rejects the harness's default provider address.
 
 ## Gotchas
 
